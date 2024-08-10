@@ -1,5 +1,13 @@
 import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Home } from "./pages";
 
-export default function App() {
-  return <div>App</div>;
-}
+const FacebookLayout = () => {
+  return (
+    <div className="container-fluid">
+      <Home />
+    </div>
+  );
+};
+
+export default FacebookLayout;
