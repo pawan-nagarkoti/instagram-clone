@@ -1,7 +1,7 @@
 import React from "react";
 import { Siderbar, MiddleOuterWraper, RightSidebar } from "../../components";
 
-export default function Home() {
+export default function Logout() {
   return (
     <>
       <div className="row">

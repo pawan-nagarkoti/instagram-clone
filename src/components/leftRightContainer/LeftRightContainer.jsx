@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function LeftRightContainer({ children, position, colSize }) {
-  console.log(colSize);
   const dynamicStyle = {
     left: position === "left" ? 0 : "",
     right: position === "right" ? 0 : "",

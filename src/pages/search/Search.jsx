@@ -1,7 +1,7 @@
 import React from "react";
 import { Siderbar, MiddleOuterWraper, RightSidebar } from "../../components";
 
-export default function Home() {
+export default function Search() {
   return (
     <>
       <div className="row">
