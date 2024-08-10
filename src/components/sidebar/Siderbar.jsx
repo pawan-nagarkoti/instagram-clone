@@ -7,10 +7,10 @@ export default function Siderbar() {
   return (
     <>
       <LeftRightContainer position="left" colSize="2">
-        <h5>Logo</h5>
+        <h5 className="mt-3">Instagram</h5>
         <ul className="nav flex-column">
           {navbarItem?.map(({ icon, name, path }, index) => (
-            <li className="nav-item" key={index}>
+            <li className="nav-item mt-3" key={index}>
               <NavLink
                 to={path}
                 exact="true"

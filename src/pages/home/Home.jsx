@@ -1,5 +1,5 @@
 import React from "react";
-import { Siderbar, MiddleOuterWraper, RightSidebar } from "../../components";
+import { Siderbar, MiddleOuterWraper, RightSidebar, InstaCard } from "../../components";
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
       <div className="row">
         <Siderbar />
         <MiddleOuterWraper>
-          <h5>Middle Content</h5>
+          <InstaCard />
         </MiddleOuterWraper>
         <RightSidebar />
       </div>

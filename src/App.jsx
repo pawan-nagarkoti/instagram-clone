@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./style/style.scss";
 import { Route, Routes } from "react-router-dom";
 import { Home, Create, Logout, Message, Profile, Search } from "./pages";
 
