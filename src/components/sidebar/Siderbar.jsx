@@ -4,7 +4,8 @@ import LeftRightContainer from "../leftRightContainer/LeftRightContainer";
 export default function Siderbar() {
   return (
     <>
-      <LeftRightContainer position="left">
+      <LeftRightContainer position="left" colSize="2">
+        <h5>Logo</h5>
         <ul className="nav flex-column">
           <li className="nav-item">
             <a className="nav-link active" href="#">

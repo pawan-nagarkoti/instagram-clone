@@ -4,7 +4,8 @@ import LeftRightContainer from "../leftRightContainer/LeftRightContainer";
 export default function RightSidebar() {
   return (
     <>
-      <LeftRightContainer position="right">
+      <LeftRightContainer position="right" colSize="3">
+        <h5>Profile</h5>
         <p>
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis magnam dolorum, quas sit qui laboriosam quidem quibusdam minus nemo non quisquam adipisci culpa cumque ullam necessitatibus
           fuga, est velit sapiente corrupti nesciunt dolor ipsam? Consequatur, sint. Porro esse, quasi minus ducimus saepe incidunt libero animi tempore voluptatum at, necessitatibus ab, nisi magnam
