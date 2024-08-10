@@ -17,3 +17,9 @@ img {
 .cursor {
   cursor: pointer;
 }
+.gradient-text {
+  font-weight: bold;
+  background-image: linear-gradient(to right, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  -webkit-background-clip: text;
+  color: transparent;
+}
