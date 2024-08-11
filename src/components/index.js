@@ -8,5 +8,6 @@ import Button from "./Button";
 import Textarea from "./Textarea";
 import Dropdown from "./Dropdown";
 import Loading from "./Loading";
+import CommonCard from "./commonCard/CommonCard";
 
-export { Siderbar, RightSidebar, MiddleOuterWraper, InstaCard, ScrollToTop, Input, Button, Textarea, Dropdown, Loading };
+export { Siderbar, RightSidebar, MiddleOuterWraper, InstaCard, ScrollToTop, Input, Button, Textarea, Dropdown, Loading, CommonCard };
