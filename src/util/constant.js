@@ -1,5 +1,11 @@
 import { HomeIcon, SearchIcon, messageIcon, createIcon, profileIcon, LogoutIcon } from "../assets/icons";
 
+export const appUrl = import.meta.env.VITE_API_URL;
+
+export const dropdownValuesForRole = [
+  { value: "ADMIN", label: "Admin" },
+  { value: "USER", label: "User" },
+];
 export const navbarItem = [
   {
     icon: HomeIcon,
