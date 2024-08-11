@@ -24,7 +24,7 @@ export default function Siderbar() {
           {navbarItem?.map(({ icon, name, path }, index) => (
             <li className="nav-item mt-3" key={index}>
               <NavLink
-                to={name === "Logout" ? "/login" : path}
+                to={path}
                 exact="true"
                 style={({ isActive }) => ({
                   color: isActive ? "blue" : "black",
