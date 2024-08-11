@@ -1,9 +1,21 @@
 import React from "react";
 import LeftRightContainer from "../leftRightContainer/LeftRightContainer";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { navbarItem } from "../../util/constant";
+import Cookies from "js-cookie";
 
 export default function Siderbar() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    // Remove cookies
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    Cookies.remove("role");
+    // Navigate to the login page
+    navigate("/login");
+    // Reload the page to clear any remaining state
+    window.location.reload();
+  };
   return (
     <>
       <LeftRightContainer position="left" colSize="2">
@@ -12,7 +24,7 @@ export default function Siderbar() {
           {navbarItem?.map(({ icon, name, path }, index) => (
             <li className="nav-item mt-3" key={index}>
               <NavLink
-                to={path}
+                to={name === "Logout" ? "/login" : path}
                 exact="true"
                 style={({ isActive }) => ({
                   color: isActive ? "blue" : "black",
@@ -20,8 +32,10 @@ export default function Siderbar() {
                 })}
                 className="nav-link"
               >
-                {icon} &nbsp; &nbsp;
-                {name}
+                <span onClick={name === "Logout" ? handleLogout : undefined}>
+                  {icon} &nbsp; &nbsp;
+                  {name}
+                </span>
               </NavLink>
             </li>
           ))}

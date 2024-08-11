@@ -4,7 +4,7 @@ import "./style/style.scss";
 import { Route, Routes } from "react-router-dom";
 import UserProvider from "./services/UserContext";
 import ProtectedRoute from "./services/ProtectedRoute";
-import { Home, Create, Logout, Message, Profile, Search } from "./pages";
+import { Home, Create, Message, Profile, Search } from "./pages";
 import { NoFound, Signup, Login } from "./pages";
 
 const FacebookLayout = () => {
@@ -18,7 +18,6 @@ const FacebookLayout = () => {
           <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
-            <Route path="/logout" element={<Logout />} />
             <Route path="/message" element={<Message />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/search" element={<Search />} />

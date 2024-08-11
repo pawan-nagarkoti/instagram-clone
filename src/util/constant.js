@@ -35,6 +35,6 @@ export const navbarItem = [
   {
     icon: LogoutIcon,
     name: "Logout",
-    path: "/logout",
+    path: "",
   },
 ];
