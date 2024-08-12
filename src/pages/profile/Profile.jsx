@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard } from "../../components";
 import "./profile.scss";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const profileData = {
@@ -24,6 +25,7 @@ export default function Profile() {
   };
 
   const [activeTab, setActiveTab] = useState("posts");
+  const navigate = useNavigate();
 
   const renderContent = () => {
     switch (activeTab) {
@@ -56,7 +58,9 @@ export default function Profile() {
               <div className="col-md-9">
                 <div className="d-flex align-items-center mb-3">
                   <h2 className="me-3">{profileData.username}</h2>
-                  <button className="btn btn-outline-secondary btn-sm me-2">Edit Profile</button>
+                  <button className="btn btn-outline-secondary btn-sm me-2" onClick={() => navigate("/edit-profile")}>
+                    Edit Profile
+                  </button>
                   <button className="btn btn-outline-secondary btn-sm">Settings</button>
                 </div>
                 <div className="d-flex mb-3">
