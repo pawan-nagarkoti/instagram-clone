@@ -7,7 +7,8 @@ export default function Message() {
       <div className="row">
         <Siderbar />
         <MiddleOuterWraper>
-          <h5>Middle Content</h5>
+          <h5>Message box</h5>
+          <p>Development in progress!</p>
         </MiddleOuterWraper>
         <RightSidebar />
       </div>
