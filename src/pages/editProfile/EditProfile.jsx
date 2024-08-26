@@ -41,7 +41,7 @@ export default function EditProfile() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3 row align-items-center">
                   <label htmlFor="name" className="col-sm-3 col-form-label">
-                    Name
+                    First Name
                   </label>
                   <div className="col-sm-9">
                     <input type="text" className="form-control" id="name" name="name" value={profileData.name} onChange={handleInputChange} />
@@ -50,7 +50,7 @@ export default function EditProfile() {
 
                 <div className="mb-3 row align-items-center">
                   <label htmlFor="username" className="col-sm-3 col-form-label">
-                    Username
+                    Last Name
                   </label>
                   <div className="col-sm-9">
                     <input type="text" className="form-control" id="username" name="username" value={profileData.username} onChange={handleInputChange} />
@@ -59,7 +59,7 @@ export default function EditProfile() {
 
                 <div className="mb-3 row align-items-center">
                   <label htmlFor="website" className="col-sm-3 col-form-label">
-                    Website
+                    Location
                   </label>
                   <div className="col-sm-9">
                     <input type="text" className="form-control" id="website" name="website" placeholder="Website" value={profileData.website} onChange={handleInputChange} />
@@ -76,11 +76,11 @@ export default function EditProfile() {
                 </div>
 
                 <div className="mb-3 row align-items-center">
-                  <label htmlFor="email" className="col-sm-3 col-form-label">
-                    Email
+                  <label htmlFor="DOB" className="col-sm-3 col-form-label">
+                    DOB
                   </label>
                   <div className="col-sm-9">
-                    <input type="email" className="form-control" id="email" name="email" value={profileData.email} onChange={handleInputChange} />
+                    <input type="date" className="form-control" id="DOB" name="dob" value={profileData.email} onChange={handleInputChange} />
                   </div>
                 </div>
 
@@ -89,29 +89,19 @@ export default function EditProfile() {
                     Phone Number
                   </label>
                   <div className="col-sm-9">
-                    <input type="text" className="form-control" id="phoneNumber" name="phoneNumber" value={profileData.phoneNumber} onChange={handleInputChange} />
-                  </div>
-                </div>
-
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="gender" className="col-sm-3 col-form-label">
-                    Gender
-                  </label>
-                  <div className="col-sm-9">
-                    <select className="form-select" id="gender" name="gender" value={profileData.gender} onChange={handleInputChange}>
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="non-binary">Non-binary</option>
-                      <option value="prefer-not-to-say">Prefer not to say</option>
-                    </select>
+                    <div className="input-group">
+                      <span class="input-group-text" id="basic-addon1">
+                        @
+                      </span>
+                      <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" />
+                    </div>
                   </div>
                 </div>
 
                 <div className="mb-3 row">
                   <div className="col-sm-9 offset-sm-3">
                     <button type="submit" className="btn btn-primary">
-                      Submit
+                      Update
                     </button>
                   </div>
                 </div>
