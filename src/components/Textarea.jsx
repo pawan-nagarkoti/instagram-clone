@@ -4,12 +4,13 @@ export default forwardRef(function Textarea({ label = "", rows = "5", ...props }
   const id = useId();
   return (
     <>
-      <div className="mb-3">
-        <label htmlFor={id} className="form-label">
+      <div className="mb-3 row align-items-center">
+        <label htmlFor={id} className="col-sm-3 col-form-label">
           {label}
         </label>
-        <textarea className="form-control" rows={rows} id={id} ref={ref} {...props}></textarea>
-        {/* <div className="form-text">We'll never share your email with anyone else.</div> */}
+        <div className="col-sm-9">
+          <textarea className="form-control" rows={rows} id={id} ref={ref} {...props}></textarea>
+        </div>
       </div>
     </>
   );

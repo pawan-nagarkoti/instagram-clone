@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./editProfile.scss";
-import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard } from "../../components";
+import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Input, Textarea, Button, Dropdown } from "../../components";
+import { useForm } from "react-hook-form";
+import { dropdownValuesForCountryCodes } from "../../util/constant";
 
 export default function EditProfile() {
   const [profileData, setProfileData] = useState({
@@ -14,14 +16,14 @@ export default function EditProfile() {
     gender: "",
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfileData({ ...profileData, [name]: value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Profile updated:", profileData);
+  const onSubmit = (data) => {
+    console.log(data);
   };
   return (
     <>
@@ -38,71 +40,19 @@ export default function EditProfile() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="name" className="col-sm-3 col-form-label">
-                    First Name
-                  </label>
-                  <div className="col-sm-9">
-                    <input type="text" className="form-control" id="name" name="name" value={profileData.name} onChange={handleInputChange} />
-                  </div>
-                </div>
-
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="username" className="col-sm-3 col-form-label">
-                    Last Name
-                  </label>
-                  <div className="col-sm-9">
-                    <input type="text" className="form-control" id="username" name="username" value={profileData.username} onChange={handleInputChange} />
-                  </div>
-                </div>
-
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="website" className="col-sm-3 col-form-label">
-                    Location
-                  </label>
-                  <div className="col-sm-9">
-                    <input type="text" className="form-control" id="website" name="website" placeholder="Website" value={profileData.website} onChange={handleInputChange} />
-                  </div>
-                </div>
-
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="bio" className="col-sm-3 col-form-label">
-                    Bio
-                  </label>
-                  <div className="col-sm-9">
-                    <textarea className="form-control" id="bio" name="bio" rows="3" placeholder="Bio" value={profileData.bio} onChange={handleInputChange}></textarea>
-                  </div>
-                </div>
-
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="DOB" className="col-sm-3 col-form-label">
-                    DOB
-                  </label>
-                  <div className="col-sm-9">
-                    <input type="date" className="form-control" id="DOB" name="dob" value={profileData.email} onChange={handleInputChange} />
-                  </div>
-                </div>
-
-                <div className="mb-3 row align-items-center">
-                  <label htmlFor="phoneNumber" className="col-sm-3 col-form-label">
-                    Phone Number
-                  </label>
-                  <div className="col-sm-9">
-                    <div className="input-group">
-                      <span class="input-group-text" id="basic-addon1">
-                        @
-                      </span>
-                      <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" />
-                    </div>
-                  </div>
-                </div>
-
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Input label="First Name" {...register("firstName")} />
+                <Input label="Last Name" {...register("lastName")} />
+                <Input label="Location" {...register("location")} />
+                <Input label="DOB" type="date" {...register("dob")} />
+                <Dropdown options={dropdownValuesForCountryCodes} label="Country Code" {...register("countryCode")} />
+                <Input label="Phone Number" type="number" {...register("phoneNumber")} />
+                <Textarea label="Bio" {...register("bio")} />
                 <div className="mb-3 row">
                   <div className="col-sm-9 offset-sm-3">
-                    <button type="submit" className="btn btn-primary">
-                      Update
-                    </button>
+                    <Button className="btn-primary" type="submit">
+                      update
+                    </Button>
                   </div>
                 </div>
               </form>

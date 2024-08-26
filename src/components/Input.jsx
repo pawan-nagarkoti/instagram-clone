@@ -4,12 +4,13 @@ export default forwardRef(function Input({ label = "", type = "text", ...props }
   const id = useId();
   return (
     <>
-      <div className="mb-3">
-        <label htmlFor={id} className="form-label">
+      <div className="mb-3 row align-items-center">
+        <label htmlFor={id} className="col-sm-3 col-form-label">
           {label}
         </label>
-        <input type={type} className="form-control" id={id} ref={ref} {...props} />
-        {/* <div className="form-text">We'll never share your email with anyone else.</div> */}
+        <div className="col-sm-9">
+          <input type={type} className="form-control" id={id} ref={ref} {...props} />
+        </div>
       </div>
     </>
   );
