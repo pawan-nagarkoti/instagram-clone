@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import "./editProfile.scss";
-import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Input, Textarea, Button, Dropdown } from "../../components";
+import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Input, Textarea, Button, Dropdown, Loading } from "../../components";
 import { useForm } from "react-hook-form";
 import { dropdownValuesForCountryCodes } from "../../util/constant";
+import { _patch } from "../../services/api";
+import { useToast } from "../../services/hook";
+import { useNavigate } from "react-router-dom";
 
 export default function EditProfile() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
+  const navigate = useNavigate();
+
   const [profileData, setProfileData] = useState({
     profilePic: "https://via.placeholder.com/150",
     name: "Name Surname",
@@ -16,14 +23,36 @@ export default function EditProfile() {
     gender: "",
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const editProfileDataObject = {
+      bio: data?.bio,
+      countryCode: data?.countryCode,
+      dob: data?.dob,
+      firstName: data?.firstName,
+      lastName: data?.lastName,
+      location: data?.location,
+      phoneNumber: data?.phoneNumber,
+    };
+    setIsLoading(true);
+    try {
+      const response = await _patch(`social-media/profile`, editProfileDataObject);
+      if (response?.status) {
+        showToast(response.data.message, "success");
+        navigate("/profile");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <>
@@ -51,7 +80,7 @@ export default function EditProfile() {
                 <div className="mb-3 row">
                   <div className="col-sm-9 offset-sm-3">
                     <Button className="btn-primary" type="submit">
-                      update
+                      {isLoading ? <Loading /> : "update"}
                     </Button>
                   </div>
                 </div>
