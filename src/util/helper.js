@@ -7,3 +7,14 @@ export const formatDateToYYYYMMDD = (dateString) => {
   }
   return date.toISOString().split("T")[0];
 };
+
+// This function is used for convert image url to binary
+export const convertImageUrlToBinary = async (profilePicPreview, imageKey) => {
+  const response = await fetch(profilePicPreview);
+  const blob = await response.blob();
+  // Create a new FormData object
+  const formData = new FormData();
+  // Append the blob to the FormData object
+  formData.append(imageKey, blob, "profile-image.png"); // You can name the file here
+  return formData;
+};

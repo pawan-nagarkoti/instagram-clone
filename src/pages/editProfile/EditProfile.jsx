@@ -6,7 +6,7 @@ import { dropdownValuesForCountryCodes } from "../../util/constant";
 import { _get, _patch } from "../../services/api";
 import { useToast } from "../../services/hook";
 import { useNavigate } from "react-router-dom";
-import { formatDateToYYYYMMDD } from "../../util/helper";
+import { formatDateToYYYYMMDD, convertImageUrlToBinary } from "../../util/helper";
 
 export default function EditProfile() {
   const [isLoading, setIsLoading] = useState(false);
@@ -62,8 +62,16 @@ export default function EditProfile() {
 
   // edit profile form submit
   const onSubmit = async (data) => {
-    const profileImageData = new FormData();
-    profileImageData.append("avatar", data.profileImage[0]);
+    // this is used for if profile image is upload after edit if we are not edit profile iamge then convertImageUrlToBinary function convert image url to binay format
+    let profileImageData;
+    if (data.profileImage[0]) {
+      const profileImageDataGet = new FormData();
+      profileImageDataGet.append("avatar", data.profileImage[0]);
+      profileImageData = profileImageDataGet;
+    } else {
+      profileImageData = await convertImageUrlToBinary(profilePicPreview, "avatar");
+    }
+
     const editProfileDataObject = {
       bio: data?.bio,
       countryCode: data?.countryCode,
@@ -76,7 +84,12 @@ export default function EditProfile() {
     setIsLoading(true);
     try {
       const response = await _patch(`social-media/profile`, editProfileDataObject);
-      const profileImageUploadResponse = await _patch(`users/avatar`, profileImageData);
+
+      const profileImageUploadResponse = await _patch(`users/avatar`, profileImageData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response?.status && profileImageUploadResponse?.status === 200) {
         showToast(response.data.message, "success");
         navigate("/profile");
