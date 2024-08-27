@@ -1,30 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./editProfile.scss";
 import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Input, Textarea, Button, Dropdown, Loading } from "../../components";
 import { useForm } from "react-hook-form";
 import { dropdownValuesForCountryCodes } from "../../util/constant";
-import { _patch } from "../../services/api";
+import { _get, _patch } from "../../services/api";
 import { useToast } from "../../services/hook";
 import { useNavigate } from "react-router-dom";
+import { formatDateToYYYYMMDD } from "../../util/helper";
 
 export default function EditProfile() {
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const [getusername, setGetUsername] = useState("");
+  const [profilePicPreview, setProfilePicPreview] = useState("https://via.placeholder.com/150");
 
-  const [profileData, setProfileData] = useState({
-    profilePic: "https://via.placeholder.com/150",
-    name: "Name Surname",
-    username: "username",
-    website: "",
-    bio: "",
-    email: "email@example.com",
-    phoneNumber: "",
-    gender: "",
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      location: "",
+      dob: "",
+      countryCode: "",
+      phoneNumber: "",
+      bio: "",
+    },
   });
 
-  const { register, handleSubmit } = useForm();
+  // get userprofile data;
+  const getUserProfileData = async () => {
+    try {
+      const getUserProfileDataResponse = await _get(`social-media/profile`);
+      if (getUserProfileDataResponse?.status) {
+        const profileData = getUserProfileDataResponse?.data?.data;
+        setGetUsername(profileData?.account?.username);
+        reset({
+          firstName: profileData?.firstName,
+          lastName: profileData?.lastName,
+          location: profileData?.location,
+          dob: formatDateToYYYYMMDD(profileData?.dob), // Format the date
+          countryCode: profileData?.countryCode,
+          phoneNumber: profileData?.phoneNumber,
+          bio: profileData?.bio,
+        });
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+  useEffect(() => {
+    getUserProfileData();
+  }, []);
 
+  // edit profile form submit
   const onSubmit = async (data) => {
     const editProfileDataObject = {
       bio: data?.bio,
@@ -38,6 +73,7 @@ export default function EditProfile() {
     setIsLoading(true);
     try {
       const response = await _patch(`social-media/profile`, editProfileDataObject);
+      const profileImageUploadResponse = await _patch(`users/avatar`, data?.profileImage[0]);
       if (response?.status) {
         showToast(response.data.message, "success");
         navigate("/profile");
@@ -54,6 +90,16 @@ export default function EditProfile() {
       setIsLoading(false);
     }
   };
+
+  // Handle file input change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePicPreview(previewUrl);
+    }
+  };
+
   return (
     <>
       <div className="row">
@@ -61,15 +107,17 @@ export default function EditProfile() {
         <MiddleOuterWraper>
           <div className="edit-profile-container">
             <div className="edit-profile-content">
-              <div className="profile-header d-flex align-items-center mb-4">
-                <img src={profileData.profilePic} alt="Profile" className="rounded-circle profile-pic me-3" />
-                <div>
-                  <h6 className="m-0">{profileData.username}</h6>
-                  <button className="btn btn-link p-0 text-primary">Change Profile Photo</button>
-                </div>
-              </div>
-
               <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="profile-header d-flex align-items-center mb-4">
+                  <img src={profilePicPreview} alt="Profile" className="rounded-circle profile-pic me-3" />
+                  <div>
+                    <h6 className="m-0">{getusername}</h6>
+                    <input type="file" accept="image/*" className="form-control-file" onChange={handleFileChange} style={{ display: "none" }} id="profilePicInput" {...register("profileImage")} />
+                    <label htmlFor="profilePicInput" className="btn btn-link p-0 text-primary" style={{ cursor: "pointer" }}>
+                      Change Profile Photo
+                    </label>{" "}
+                  </div>
+                </div>
                 <Input label="First Name" {...register("firstName")} />
                 <Input label="Last Name" {...register("lastName")} />
                 <Input label="Location" {...register("location")} />
