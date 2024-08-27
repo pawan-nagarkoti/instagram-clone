@@ -15,7 +15,7 @@ export default function EditProfile() {
   const [getusername, setGetUsername] = useState("");
   const [profilePicPreview, setProfilePicPreview] = useState("https://via.placeholder.com/150");
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -34,6 +34,7 @@ export default function EditProfile() {
       if (getUserProfileDataResponse?.status) {
         const profileData = getUserProfileDataResponse?.data?.data;
         setGetUsername(profileData?.account?.username);
+        setProfilePicPreview(profileData?.account?.avatar?.url);
         reset({
           firstName: profileData?.firstName,
           lastName: profileData?.lastName,
@@ -61,6 +62,8 @@ export default function EditProfile() {
 
   // edit profile form submit
   const onSubmit = async (data) => {
+    const profileImageData = new FormData();
+    profileImageData.append("avatar", data.profileImage[0]);
     const editProfileDataObject = {
       bio: data?.bio,
       countryCode: data?.countryCode,
@@ -73,8 +76,8 @@ export default function EditProfile() {
     setIsLoading(true);
     try {
       const response = await _patch(`social-media/profile`, editProfileDataObject);
-      const profileImageUploadResponse = await _patch(`users/avatar`, data?.profileImage[0]);
-      if (response?.status) {
+      const profileImageUploadResponse = await _patch(`users/avatar`, profileImageData);
+      if (response?.status && profileImageUploadResponse?.status === 200) {
         showToast(response.data.message, "success");
         navigate("/profile");
       }
@@ -91,14 +94,16 @@ export default function EditProfile() {
     }
   };
 
-  // Handle file input change
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const previewUrl = URL.createObjectURL(file);
+  // Watch the profileImage field
+  const watchProfileImage = watch("profileImage");
+  useEffect(() => {
+    if (watchProfileImage && watchProfileImage.length > 0) {
+      const previewUrl = URL.createObjectURL(watchProfileImage[0]);
       setProfilePicPreview(previewUrl);
+      // Clean up the URL object when the component unmounts or the image changes
+      return () => URL.revokeObjectURL(previewUrl);
     }
-  };
+  }, [watchProfileImage]);
 
   return (
     <>
@@ -112,7 +117,7 @@ export default function EditProfile() {
                   <img src={profilePicPreview} alt="Profile" className="rounded-circle profile-pic me-3" />
                   <div>
                     <h6 className="m-0">{getusername}</h6>
-                    <input type="file" accept="image/*" className="form-control-file" onChange={handleFileChange} style={{ display: "none" }} id="profilePicInput" {...register("profileImage")} />
+                    <input type="file" accept="image/*" className="form-control-file" style={{ display: "none" }} id="profilePicInput" {...register("profileImage")} />
                     <label htmlFor="profilePicInput" className="btn btn-link p-0 text-primary" style={{ cursor: "pointer" }}>
                       Change Profile Photo
                     </label>{" "}
