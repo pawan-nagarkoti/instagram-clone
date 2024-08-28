@@ -3,8 +3,11 @@ import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Loading } from "
 import "./profile.scss";
 import { useNavigate } from "react-router-dom";
 import { _get } from "../../services/api";
+import { useToast } from "../../services/hook";
 
 export default function Profile() {
+  const { showToast } = useToast();
+
   const profileData = {
     username: "username",
     fullName: "Name Surname",
@@ -29,6 +32,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [profileValues, setProfileValues] = useState([]);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
+  const [bookmarkedData, setBookmarkedData] = useState([]);
 
   // This function is used for get profile data
   const getProfileData = async () => {
@@ -51,20 +55,44 @@ export default function Profile() {
     }
   };
 
+  // Get bookmarked data
+  const getBookmarkedData = async () => {
+    try {
+      const response = await _get("social-media/bookmarks?page=1&limit=100");
+      if (response?.data?.success) {
+        setBookmarkedData(response?.data?.data?.bookmarkedPosts);
+        console.log(response?.data?.data?.bookmarkedPosts);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
   useEffect(() => {
     getProfileData();
+    getBookmarkedData();
   }, []);
 
   const renderContent = () => {
     switch (activeTab) {
       case "posts":
-        return (
-          <div>
-            <CommonCard data={profileData} />
-          </div>
-        );
+        return <div> {/* <CommonCard data={profileData} />{" "} */}</div>;
       case "saved":
-        return <div>Saved Content</div>;
+        return (
+          <>
+            {bookmarkedData?.map((data, index) => (
+              <CommonCard key={index} data={data} />
+            ))}
+          </>
+        );
+
       case "reels":
         return <div>Reels Content</div>;
       case "tags":
@@ -96,7 +124,8 @@ export default function Profile() {
                   </div>
                   <div className="d-flex mb-3">
                     <div className="me-4">
-                      <strong>{profileData.posts}</strong> posts
+                      {" "}
+                      <strong>{profileData.posts}</strong> posts{" "}
                     </div>
                     <div className="me-4">
                       <strong>{profileValues?.followersCount}</strong> followers
@@ -140,7 +169,7 @@ export default function Profile() {
                   </button>
                 </li>
               </ul>
-              <div className="tab-content mt-4">{renderContent()}</div>
+              <div className="tab-content mt-4 row">{renderContent()}</div>
             </div>
           </div>
         </MiddleOuterWraper>

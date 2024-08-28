@@ -1,14 +1,11 @@
 import React from "react";
 
 export default function CommonCard({ data }) {
+  console.log("data", data?.images[0]?.url);
   return (
     <>
-      <div className="row photo-grid">
-        {data.photos.map((photo, index) => (
-          <div className="col-4 p-1" key={index}>
-            <img src={photo} alt={`Photo ${index + 1}`} className="img-fluid" />
-          </div>
-        ))}
+      <div className="col-4 p-1">
+        <img src={data?.images[0]?.url ? data?.images[0]?.url : "https://via.placeholder.com/300"} alt={`Photo`} className="img-fluid h-100" />
       </div>
     </>
   );
