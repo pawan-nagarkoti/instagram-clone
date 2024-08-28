@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./InstaCard.scss";
 import { LikeFilledIcon, LikeUnFillIcon, commentIcon, BookmarkUnFilledIcon, BookmarkFilledIcon, DeleteIcon } from "../../assets/icons";
-import { _get } from "../../services/api";
+import { _delete, _get } from "../../services/api";
 import Loading from "../Loading";
+import { useToast } from "../../services/hook";
+
 export default function InstaCard() {
   const [postData, setPostData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPostDeleteLoading, setIsPostDeleteLoading] = useState(false);
+  const { showToast } = useToast();
 
   const getPostData = async () => {
     setIsLoading(true);
@@ -29,6 +33,32 @@ export default function InstaCard() {
   useEffect(() => {
     getPostData();
   }, []);
+
+  // Delete post
+  const handleDeletePost = async (postId) => {
+    setIsPostDeleteLoading(true);
+    try {
+      const response = await _delete(`social-media/posts/${postId}`);
+      if (response?.status === 200) {
+        showToast(response.data.message, "success");
+        getPostData();
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsPostDeleteLoading(false);
+    }
+  };
+
+  if (postData.length === 0 && !isLoading) {
+    return <p>No post available</p>;
+  }
   return (
     <>
       {isLoading ? (
@@ -42,10 +72,12 @@ export default function InstaCard() {
                   <img src="https://picsum.photos/200" alt="User Avatar" className="avatar" />
                   <span className="username">{data?.author?.account?.username}</span>
                 </div>
-                <div className="cursor">{DeleteIcon}</div>
+                <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
+                  {isPostDeleteLoading ? <Loading /> : DeleteIcon}
+                </div>
               </div>
               <div className="post-image">
-                <img src={data?.images[0]?.url} alt="Post Image" />
+                <img src={data?.images[0]?.url ? data?.images[0]?.url : "https://via.placeholder.com/150"} alt="Post Image" />
               </div>
               <div className="description">
                 <div className="d-flex justify-content-between">
