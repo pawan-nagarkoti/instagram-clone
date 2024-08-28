@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./InstaCard.scss";
 import { LikeFilledIcon, LikeUnFillIcon, commentIcon, BookmarkUnFilledIcon, BookmarkFilledIcon, DeleteIcon } from "../../assets/icons";
-import { _delete, _get } from "../../services/api";
+import { _delete, _get, _post } from "../../services/api";
 import Loading from "../Loading";
 import { useToast } from "../../services/hook";
 
@@ -56,6 +56,26 @@ export default function InstaCard() {
     }
   };
 
+  // Add to bookmark page
+  const handleBookmarkPage = async (postId) => {
+    try {
+      const response = await _post(`social-media/bookmarks/${postId}`);
+      if (response?.status === 200) {
+        showToast(response.data.message, "success");
+        getPostData();
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
   if (postData.length === 0 && !isLoading) {
     return <p>No post available</p>;
   }
@@ -86,7 +106,9 @@ export default function InstaCard() {
                     <span className="font-size cursor">{commentIcon}</span>
                   </div>
                   <div>
-                    <span className="font-size cursor">{true ? BookmarkUnFilledIcon : BookmarkFilledIcon}</span>
+                    <span className="font-size cursor" onClick={() => handleBookmarkPage(data?._id)}>
+                      {data?.isBookmarked ? BookmarkFilledIcon : BookmarkUnFilledIcon}
+                    </span>
                   </div>
                 </div>
                 <span className="username">
