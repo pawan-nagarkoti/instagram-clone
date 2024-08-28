@@ -57,7 +57,7 @@ export default function Login() {
 
             <div style={{ position: "relative" }}>
               <Input label="Password" type={togglePassword ? "text" : "password"} {...register("password")} />
-              <Button type="button" className="btn-primary btn-sm" style={{ position: "absolute", top: "2.2rem", right: ".4rem" }} onClick={() => setTogglePassword((preValue) => !preValue)}>
+              <Button type="button" className="btn-primary btn-sm" style={{ position: "absolute", top: "0.2rem", right: ".4rem" }} onClick={() => setTogglePassword((preValue) => !preValue)}>
                 {togglePassword ? "show" : "hide"}
               </Button>
             </div>
