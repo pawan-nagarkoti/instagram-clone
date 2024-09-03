@@ -33,6 +33,7 @@ export default function Profile() {
   const [profileValues, setProfileValues] = useState([]);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [bookmarkedData, setBookmarkedData] = useState([]);
+  const [myPostData, setMyPostData] = useState([]);
 
   // This function is used for get profile data
   const getProfileData = async () => {
@@ -61,7 +62,26 @@ export default function Profile() {
       const response = await _get("social-media/bookmarks?page=1&limit=100");
       if (response?.data?.success) {
         setBookmarkedData(response?.data?.data?.bookmarkedPosts);
-        console.log(response?.data?.data?.bookmarkedPosts);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
+  // Get my post data
+  const getMyPostData = async () => {
+    try {
+      const response = await _get("social-media/posts/get/my?page=1&limit=100");
+      if (response?.status === 200) {
+        setMyPostData(response?.data?.data?.posts);
+        // setMyPostData(response?.data?.data?.posts[0]?.author?.coverImage?.url);
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -78,21 +98,15 @@ export default function Profile() {
   useEffect(() => {
     getProfileData();
     getBookmarkedData();
+    getMyPostData();
   }, []);
 
   const renderContent = () => {
     switch (activeTab) {
       case "posts":
-        return <div> {/* <CommonCard data={profileData} />{" "} */}</div>;
+        return <>{myPostData.length === 0 ? <p>Data is not found</p> : myPostData?.map((data, index) => <CommonCard key={index} data={data} />)}</>;
       case "saved":
-        return (
-          <>
-            {bookmarkedData?.map((data, index) => (
-              <CommonCard key={index} data={data} />
-            ))}
-          </>
-        );
-
+        return <>{bookmarkedData.length === 0 ? <p>Data is not found</p> : bookmarkedData?.map((data, index) => <CommonCard key={index} data={data} />)}</>;
       case "reels":
         return <div>Reels Content</div>;
       case "tags":

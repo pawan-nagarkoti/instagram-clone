@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function CommonCard({ data }) {
-  console.log("data", data?.images[0]?.url);
   return (
     <>
       <div className="col-4 p-1">
