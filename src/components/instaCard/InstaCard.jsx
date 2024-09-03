@@ -95,7 +95,6 @@ export default function InstaCard() {
     } finally {
     }
   };
-
   if (postData.length === 0 && !isLoading) {
     return <p>No post available</p>;
   }
@@ -109,7 +108,7 @@ export default function InstaCard() {
             <div className="instagram-card mb-4">
               <div className="header">
                 <div>
-                  <img src="https://picsum.photos/200" alt="User Avatar" className="avatar" />
+                  <img src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : `https://via.placeholder.com/150`} alt="User Avatar" className="avatar" />
                   <span className="username">{data?.author?.account?.username}</span>
                 </div>
                 <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
