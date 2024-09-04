@@ -13,6 +13,7 @@ export default function InstaCard() {
   const [isPostDeleteLoading, setIsPostDeleteLoading] = useState(false);
   const { showToast } = useToast();
   const { handleShow } = useModal();
+  const [commentId, setCommentId] = useState("");
 
   const getPostData = async () => {
     setIsLoading(true);
@@ -127,7 +128,13 @@ export default function InstaCard() {
                     <span className="font-size cursor me-2" onClick={() => handleLikeUnlikePost(data?._id)}>
                       {data?.isLiked ? LikeFilledIcon : LikeUnFillIcon}
                     </span>
-                    <span className="font-size cursor" onClick={handleShow}>
+                    <span
+                      className="font-size cursor"
+                      onClick={() => {
+                        handleShow();
+                        setCommentId(data?._id);
+                      }}
+                    >
                       {commentIcon}
                     </span>
                   </div>
@@ -146,16 +153,16 @@ export default function InstaCard() {
                 </span>
                 <span className="caption">{data?.content}</span>
               </div>
-              <div className="comment-box">
+              {/* <div className="comment-box">
                 <textarea placeholder="Add a comment..."></textarea>
-              </div>
+              </div> */}
             </div>
           </div>
         ))
       )}
 
       {/* comment modal */}
-      <CommentModal />
+      <CommentModal commentId={commentId} />
     </>
   );
 }

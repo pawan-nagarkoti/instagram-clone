@@ -1,0 +1,29 @@
+.input-modal-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .post-input-box {
+    border: 1px solid #ddd;
+    width: 90%;
+    padding: 1rem;
+  }
+  .post-modal-btn {
+    padding: 1rem;
+  }
+}
+
+.comment-scroll-section {
+  height: 15rem;
+  overflow: auto;
+  .comment-box-container {
+    display: flex;
+    gap: 1rem;
+    .comment-username-pic {
+      min-width: 3rem;
+      min-height: 3rem;
+      max-width: 3rem;
+      max-height: 3rem;
+      border-radius: 50%;
+    }
+  }
+}
