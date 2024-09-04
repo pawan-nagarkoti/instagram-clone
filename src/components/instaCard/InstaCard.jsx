@@ -4,12 +4,15 @@ import { LikeFilledIcon, LikeUnFillIcon, commentIcon, BookmarkUnFilledIcon, Book
 import { _delete, _get, _post } from "../../services/api";
 import Loading from "../Loading";
 import { useToast } from "../../services/hook";
+import { useModal } from "../../services/hook/ModalContext";
+import CommentModal from "../commentModal/CommentModal";
 
 export default function InstaCard() {
   const [postData, setPostData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isPostDeleteLoading, setIsPostDeleteLoading] = useState(false);
   const { showToast } = useToast();
+  const { handleShow } = useModal();
 
   const getPostData = async () => {
     setIsLoading(true);
@@ -124,7 +127,9 @@ export default function InstaCard() {
                     <span className="font-size cursor me-2" onClick={() => handleLikeUnlikePost(data?._id)}>
                       {data?.isLiked ? LikeFilledIcon : LikeUnFillIcon}
                     </span>
-                    <span className="font-size cursor">{commentIcon}</span>
+                    <span className="font-size cursor" onClick={handleShow}>
+                      {commentIcon}
+                    </span>
                   </div>
                   <div>
                     <span className="font-size cursor" onClick={() => handleBookmarkPage(data?._id)}>
@@ -148,6 +153,9 @@ export default function InstaCard() {
           </div>
         ))
       )}
+
+      {/* comment modal */}
+      <CommentModal />
     </>
   );
 }

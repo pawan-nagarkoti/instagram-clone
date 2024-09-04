@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.min.js";
 import "./style/style.scss";
 import { Route, Routes } from "react-router-dom";
 import UserProvider from "./services/UserContext";
