@@ -4,7 +4,7 @@ import { useModal } from "../../services/hook/ModalContext";
 import "./commentModal.scss";
 import Loading from "../Loading";
 import { useToast } from "../../services/hook";
-import { _delete, _get, _post } from "../../services/api";
+import { _delete, _get, _patch, _post } from "../../services/api";
 
 export default function CommentModal({ commentId }) {
   const { modalShow, handleClose } = useModal();
@@ -15,8 +15,10 @@ export default function CommentModal({ commentId }) {
   const [hasCommentDeleteLoading, setHasCommentDeleteLoading] = useState(false);
   const [deletedCommentId, setDeletedCommentId] = useState(null);
   const [getCommentDataLoading, setGetCommentDataLoading] = useState(false);
+  const [editCommentData, setEditCommentData] = useState(null);
+  const [editCommentDataId, setEditCommentDataId] = useState(null);
 
-  //   Post comment
+  //   Add comment
   const postComment = async () => {
     setIsPostLoading(true);
     try {
@@ -41,11 +43,36 @@ export default function CommentModal({ commentId }) {
     }
   };
 
+  // Edit comment
+  const editComment = async () => {
+    setIsPostLoading(true);
+    try {
+      const response = await _patch(`social-media/comments/${editCommentDataId}`, {
+        content: editCommentData,
+      });
+      if (response?.data?.success) {
+        showToast(response.data.message, "success");
+        getAllCommentData();
+        setEditCommentData("");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsPostLoading(false);
+    }
+  };
+
   //   This function is used for post comment
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     setIsPostLoading(true);
-    postComment();
+    editCommentData ? editComment() : postComment();
   };
 
   //   Get all comments
@@ -97,6 +124,12 @@ export default function CommentModal({ commentId }) {
     }
   };
 
+  // It is used for get comment data when we click on edit button
+  const handleEditCommentData = async (commentData, editCommentId) => {
+    setEditCommentData(commentData);
+    setEditCommentDataId(editCommentId);
+  };
+
   return (
     <>
       <CommonModal show={modalShow} handleClose={handleClose} title="Modal title">
@@ -111,7 +144,9 @@ export default function CommentModal({ commentId }) {
                   <div className="d-flex justify-content-between align-items-center">
                     <strong className="m-0">{data?.author?.account?.username}</strong>
                     <div className="d-flex gap-2 mx-5">
-                      <button className="btn btn-primary">edit</button>
+                      <button className="btn btn-primary" onClick={() => handleEditCommentData(data?.content, data?._id)}>
+                        edit
+                      </button>
                       <button className="btn btn-danger" onClick={() => deleteComments(data?._id)} disabled={hasCommentDeleteLoading && deletedCommentId === data?._id}>
                         {hasCommentDeleteLoading && deletedCommentId === data?._id ? <Loading /> : "delete"}
                       </button>
@@ -126,9 +161,15 @@ export default function CommentModal({ commentId }) {
         </div>
         <form onSubmit={handleCommentSubmit} className="mt-3">
           <div className="input-modal-box">
-            <input type="text" className="post-input-box" onChange={(e) => setHasCommentPost(e.target.value)} value={hasCommentPost} />
+            <input
+              type="text"
+              className="post-input-box"
+              onChange={editCommentData ? (e) => setEditCommentData(e.target.value) : (e) => setHasCommentPost(e.target.value)}
+              value={editCommentData ? editCommentData : hasCommentPost}
+            />
             <button className="post-modal-btn" type="submit">
-              {isPostLoading ? <Loading /> : "Post"}
+              {/* {isPostLoading ? <Loading /> : "Post"} */}
+              {isPostLoading ? <Loading /> : editCommentData ? "Edit Post" : "Add Post"}
             </button>
           </div>
         </form>
