@@ -62,7 +62,7 @@ export default function Login() {
               </Button>
             </div>
 
-            <Button type="submit" className="btn-primary">
+            <Button type="submit" className="btn-primary m-auto d-flex mt-5">
               {haveLoginData ? <Loading /> : "submit"}
             </Button>
 

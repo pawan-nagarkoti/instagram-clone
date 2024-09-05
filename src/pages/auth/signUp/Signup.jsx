@@ -62,7 +62,7 @@ export default function Signup() {
 
             <Dropdown options={dropdownValuesForRole} label="Role" {...register("role")} />
 
-            <Button type="submit" className="btn-primary">
+            <Button type="submit" className="btn-primary d-flex m-auto mt-5">
               {isSubmitedForm ? <Loading /> : "Submit"}
             </Button>
           </form>
