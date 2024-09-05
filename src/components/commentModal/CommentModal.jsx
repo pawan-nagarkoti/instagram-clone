@@ -17,6 +17,7 @@ export default function CommentModal({ commentId }) {
   const [getCommentDataLoading, setGetCommentDataLoading] = useState(false);
   const [editCommentData, setEditCommentData] = useState(null);
   const [editCommentDataId, setEditCommentDataId] = useState(null);
+  const [loginUserDetail, setLoginUserDetail] = useState(null);
 
   //   Add comment
   const postComment = async () => {
@@ -75,6 +76,25 @@ export default function CommentModal({ commentId }) {
     editCommentData ? editComment() : postComment();
   };
 
+  // Get login user data
+  const getLoginUserData = async () => {
+    try {
+      const response = await _get(`social-media/profile`);
+      if (response?.status === 200) {
+        setLoginUserDetail(response?.data?.data);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
   //   Get all comments
   const getAllCommentData = async () => {
     setGetCommentDataLoading(true);
@@ -98,6 +118,7 @@ export default function CommentModal({ commentId }) {
   useEffect(() => {
     if (commentId) {
       getAllCommentData();
+      getLoginUserData();
     }
   }, [commentId]);
 
@@ -143,14 +164,16 @@ export default function CommentModal({ commentId }) {
                 <div>
                   <div className="d-flex justify-content-between align-items-center">
                     <strong className="m-0">{data?.author?.account?.username}</strong>
-                    <div className="d-flex gap-2 mx-5">
-                      <button className="btn btn-primary" onClick={() => handleEditCommentData(data?.content, data?._id)}>
-                        edit
-                      </button>
-                      <button className="btn btn-danger" onClick={() => deleteComments(data?._id)} disabled={hasCommentDeleteLoading && deletedCommentId === data?._id}>
-                        {hasCommentDeleteLoading && deletedCommentId === data?._id ? <Loading /> : "delete"}
-                      </button>
-                    </div>
+                    {loginUserDetail?.account?._id === data?.author?.account?._id && (
+                      <div className="d-flex gap-2 mx-5">
+                        <button className="btn btn-primary" onClick={() => handleEditCommentData(data?.content, data?._id)}>
+                          edit
+                        </button>
+                        <button className="btn btn-danger" onClick={() => deleteComments(data?._id)} disabled={hasCommentDeleteLoading && deletedCommentId === data?._id}>
+                          {hasCommentDeleteLoading && deletedCommentId === data?._id ? <Loading /> : "delete"}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <p>{data?.content}</p>
