@@ -5,6 +5,8 @@ import "./commentModal.scss";
 import Loading from "../Loading";
 import { useToast } from "../../services/hook";
 import { _delete, _get, _patch, _post } from "../../services/api";
+import { capitalizeFirstLetter } from "../../util/helper";
+import { EditIcon, DeleteIcon, LikeUnFillIcon, LikeFilledIcon } from "../../assets/icons";
 
 export default function CommentModal({ commentId }) {
   const { modalShow, handleClose } = useModal();
@@ -151,9 +153,29 @@ export default function CommentModal({ commentId }) {
     setEditCommentDataId(editCommentId);
   };
 
+  // like unlike comment
+  const handleLikeUnlikeComment = async (commentId) => {
+    try {
+      const response = await _post(`social-media/like/comment/${commentId}`, { commentId });
+      if (response?.status === 200) {
+        getAllCommentData();
+        showToast(response.data.message, "success");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
   return (
     <>
-      <CommonModal show={modalShow} handleClose={handleClose} title="Modal title">
+      <CommonModal show={modalShow} handleClose={handleClose} title={capitalizeFirstLetter(loginUserDetail?.account?.username)}>
         <div className="comment-scroll-section">
           {getCommentDataLoading ? (
             <Loading />
@@ -163,20 +185,26 @@ export default function CommentModal({ commentId }) {
                 <img src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : "https://avatar.iran.liara.run/public"} alt="" className="comment-username-pic" />
                 <div>
                   <div className="d-flex justify-content-between align-items-center">
-                    <strong className="m-0">{data?.author?.account?.username}</strong>
-                    {loginUserDetail?.account?._id === data?.author?.account?._id && (
-                      <div className="d-flex gap-2 mx-5">
-                        <button className="btn btn-primary" onClick={() => handleEditCommentData(data?.content, data?._id)}>
-                          edit
-                        </button>
-                        <button className="btn btn-danger" onClick={() => deleteComments(data?._id)} disabled={hasCommentDeleteLoading && deletedCommentId === data?._id}>
-                          {hasCommentDeleteLoading && deletedCommentId === data?._id ? <Loading /> : "delete"}
-                        </button>
-                      </div>
-                    )}
+                    <strong className="m-0 mt-2">{data?.author?.account?.username}</strong>
+                    <div className="position-absolute end-0 d-flex">
+                      <button className="btn btn-light" onClick={() => handleLikeUnlikeComment(data?._id)}>
+                        <span className="text-white">{data?.isLiked ? LikeFilledIcon : LikeUnFillIcon}</span>
+                      </button>
+                      <button className="btn btn-light">{data?.likes}</button>
+                      {loginUserDetail?.account?._id === data?.author?.account?._id && (
+                        <div className="d-flex gap-2">
+                          <button className="btn btn-primary" onClick={() => handleEditCommentData(data?.content, data?._id)}>
+                            {EditIcon}
+                          </button>
+                          <button className="btn btn-danger" onClick={() => deleteComments(data?._id)} disabled={hasCommentDeleteLoading && deletedCommentId === data?._id}>
+                            {hasCommentDeleteLoading && deletedCommentId === data?._id ? <Loading /> : DeleteIcon}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <p>{data?.content}</p>
+                  <p className="mt-2">{data?.content}</p>
                 </div>
               </div>
             ))

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark, faCirclePlus, faEnvelope, faHeart, faHouse, faMagnifyingGlass, faRightFromBracket, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark, faCirclePlus, faEnvelope, faHeart, faHouse, faMagnifyingGlass, faPenToSquare, faRightFromBracket, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular, faComment as faCommentRegular, faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
 
 // Exporting the icons as constants
@@ -15,3 +15,4 @@ export const commentIcon = <FontAwesomeIcon icon={faCommentRegular} />;
 export const BookmarkUnFilledIcon = <FontAwesomeIcon icon={faBookmarkRegular} />;
 export const BookmarkFilledIcon = <FontAwesomeIcon icon={faBookmark} style={{ color: "#000000" }} />;
 export const DeleteIcon = <FontAwesomeIcon icon={faTrash} />;
+export const EditIcon = <FontAwesomeIcon icon={faPenToSquare} />;

@@ -18,3 +18,10 @@ export const convertImageUrlToBinary = async (profilePicPreview, imageKey) => {
   formData.append(imageKey, blob, "profile-image.png"); // You can name the file here
   return formData;
 };
+
+// This function is used for to capitalize the first letter of a string
+export function capitalizeFirstLetter(string) {
+  if (string) {
+    return string?.charAt(0)?.toUpperCase() + string?.slice(1);
+  }
+}

@@ -18,6 +18,7 @@
   .comment-box-container {
     display: flex;
     gap: 1rem;
+    position: relative;
     .comment-username-pic {
       min-width: 3rem;
       min-height: 3rem;
