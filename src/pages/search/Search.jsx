@@ -71,7 +71,7 @@ export default function Search() {
               {!isLoading && hasSearchResults && (
                 <div className="col-4 mb-4">
                   <div className="card">
-                    <img src={searchResults?.coverImage?.url} className="card-img-top" />
+                    <img src={searchResults?.account?.avatar?.url} className="username-card-img" />
                     <div className="card-body">
                       <h6 className="card-title">{searchResults?.account?.username}</h6>
                       <p className="card-title">
