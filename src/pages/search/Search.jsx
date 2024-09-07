@@ -1,26 +1,57 @@
-import React, { useState } from "react";
-import { Siderbar, MiddleOuterWraper, RightSidebar } from "../../components";
+import React, { useEffect, useState } from "react";
+import { Siderbar, MiddleOuterWraper, RightSidebar, Loading } from "../../components";
+import { _get } from "../../services/api";
+import { useToast } from "../../services/hook";
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState("");
+  const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [notFoundUsername, setNotFoundUsername] = useState(false);
+  const [hasSearchResults, setHasSearchResults] = useState(false);
 
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-
-    // Mock search results
-    const mockResults = [
-      { id: 1, image: "https://via.placeholder.com/150", name: "user1" },
-      { id: 2, image: "https://via.placeholder.com/150", name: "user2" },
-      { id: 3, image: "https://via.placeholder.com/150", name: "user3" },
-      { id: 4, image: "https://via.placeholder.com/150", name: "user4" },
-      { id: 5, image: "https://via.placeholder.com/150", name: "user5" },
-      { id: 6, image: "https://via.placeholder.com/150", name: "user6" },
-    ];
-
-    setSearchResults(mockResults.filter((item) => item.name.includes(value)));
+  // This function is used for get user profile data on the basis of pass the username on search box
+  const getOthersUserProfile = async () => {
+    setIsLoading(true);
+    try {
+      const response = await _get(`social-media/profile/u/${searchTerm}`);
+      if (response?.status === 200) {
+        setSearchResults(response?.data?.data);
+        setHasSearchResults(true);
+        setNotFoundUsername(false);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+        if (error.response.status === 404) {
+          setHasSearchResults(false);
+          setNotFoundUsername(true);
+        }
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // this function is used for submit data after press enter on search field.
+  const handleLoginFormSubmit = async (e) => {
+    e.preventDefault();
+    if (searchTerm !== "") {
+      getOthersUserProfile();
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm.length === 0) {
+      setNotFoundUsername(false);
+      setHasSearchResults(false);
+    }
+  }, [searchTerm]);
   return (
     <>
       <div className="row">
@@ -29,24 +60,26 @@ export default function Search() {
           <div className="container">
             <div className="row mt-3">
               <div className="col-12">
-                <input type="text" className="form-control" placeholder="Search..." value={searchTerm} onChange={handleSearch} />
+                <form onSubmit={handleLoginFormSubmit}>
+                  <input type="text" className="form-control" placeholder="Search Username..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                </form>
               </div>
             </div>
             <div className="row mt-4">
-              {searchResults.length > 0 ? (
-                searchResults.map((result) => (
-                  <div key={result.id} className="col-4 mb-4">
-                    <div className="card">
-                      <img src={result.image} className="card-img-top" alt={result.name} />
-                      <div className="card-body">
-                        <h5 className="card-title">{result.name}</h5>
-                      </div>
+              {notFoundUsername && searchTerm !== "" && <p>No user found.</p>}
+              {isLoading && <Loading />}
+              {!isLoading && hasSearchResults && (
+                <div className="col-4 mb-4">
+                  <div className="card">
+                    <img src={searchResults?.coverImage?.url} className="card-img-top" />
+                    <div className="card-body">
+                      <h6 className="card-title">{searchResults?.account?.username}</h6>
+                      <p className="card-title">
+                        {searchResults?.firstName}
+                        {searchResults?.lastName}
+                      </p>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="col-12">
-                  <p className="text-center">No results found.</p>
                 </div>
               )}
             </div>
