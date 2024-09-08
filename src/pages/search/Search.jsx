@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Siderbar, MiddleOuterWraper, RightSidebar, Loading } from "../../components";
 import { _get } from "../../services/api";
 import { useToast } from "../../services/hook";
+import { useNavigate } from "react-router-dom";
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,6 +11,7 @@ export default function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const [notFoundUsername, setNotFoundUsername] = useState(false);
   const [hasSearchResults, setHasSearchResults] = useState(false);
+  const navigate = useNavigate();
 
   // This function is used for get user profile data on the basis of pass the username on search box
   const getOthersUserProfile = async () => {
@@ -69,7 +71,7 @@ export default function Search() {
               {notFoundUsername && searchTerm !== "" && <p>No user found.</p>}
               {isLoading && <Loading />}
               {!isLoading && hasSearchResults && (
-                <div className="col-4 mb-4">
+                <div className="col-4 mb-4 cusor-pointer " onClick={() => navigate("/follow-page")}>
                   <div className="card">
                     <img src={searchResults?.account?.avatar?.url} className="username-card-img" />
                     <div className="card-body">
