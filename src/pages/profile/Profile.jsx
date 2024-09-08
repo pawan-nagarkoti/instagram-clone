@@ -1,33 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Loading } from "../../components";
+import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Loading, ProfileCard } from "../../components";
 import "./profile.scss";
 import { useNavigate } from "react-router-dom";
 import { _get } from "../../services/api";
 import { useToast } from "../../services/hook";
+import { useSocial } from "../../services/hook/SocialContext";
 
 export default function Profile() {
   const { showToast } = useToast();
   const [postCount, setPostCount] = useState(0);
-
-  const profileData = {
-    username: "username",
-    fullName: "Name Surname",
-    bio: "This is the bio of the user. It could include a brief description, hobbies, or anything else they want to share.",
-    posts: 123,
-    followers: "456k",
-    following: 789,
-    profilePic: "https://via.placeholder.com/150",
-    photos: [
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-      "https://via.placeholder.com/300",
-    ],
-  };
+  const { setFollowData } = useSocial();
 
   const [activeTab, setActiveTab] = useState("posts");
   const navigate = useNavigate();
@@ -117,6 +99,24 @@ export default function Profile() {
         return null;
     }
   };
+
+  const handleFollowingList = async () => {
+    try {
+      const response = await _get(`social-media/follow/list/following/${profileValues.account.username}?page=1&limit=100`);
+      if (response?.status === 200) {
+        setFollowData(response?.data?.data);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
   return (
     <>
       <div className="row">
@@ -146,7 +146,7 @@ export default function Profile() {
                     <div className="me-4">
                       <strong>{profileValues?.followersCount}</strong> followers
                     </div>
-                    <div>
+                    <div onClick={handleFollowingList}>
                       <strong>{profileValues.followingCount}</strong> following
                     </div>
                   </div>
@@ -162,6 +162,7 @@ export default function Profile() {
             )}
             <hr />
 
+            {/* Tab Navigation */}
             <div className="container mt-4">
               <ul className="nav nav-tabs justify-content-center">
                 <li className="nav-item">

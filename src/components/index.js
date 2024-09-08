@@ -10,5 +10,6 @@ import Dropdown from "./Dropdown";
 import Loading from "./Loading";
 import CommonCard from "./commonCard/CommonCard";
 import ProfileCard from "./profileCard/ProfileCard";
+import FollowCard from "./followCard/FollowCard";
 
-export { Siderbar, RightSidebar, MiddleOuterWraper, InstaCard, ScrollToTop, Input, Button, Textarea, Dropdown, Loading, CommonCard, ProfileCard };
+export { Siderbar, RightSidebar, MiddleOuterWraper, InstaCard, ScrollToTop, Input, Button, Textarea, Dropdown, Loading, CommonCard, ProfileCard, FollowCard };

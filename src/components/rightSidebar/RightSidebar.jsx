@@ -5,12 +5,15 @@ import ProfileCard from "../profileCard/ProfileCard";
 import Loading from "../Loading";
 import { useToast } from "../../services/hook";
 import { _get } from "../../services/api";
+import FollowCard from "../followCard/FollowCard";
+import { useSocial } from "../../services/hook/SocialContext";
 
 export default function RightSidebar() {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [postData, setPostData] = useState(null);
+  const { followData } = useSocial();
 
   // Get Logged In user
   const getLoggedInUserDetail = async () => {
@@ -67,9 +70,15 @@ export default function RightSidebar() {
             <p className="text-muted fw-bold">Suggestions For You</p>
             <button className="btn btn-link p-0 text-dark">See All</button>
           </div>
-          {postData?.map((data, index) => (
+          {/* {postData?.map((data, index) => (
             <div key={index}>
               <ProfileCard image={data?.author?.account?.avatar?.url} name={data?.author?.account?.username} about={`${data?.author?.firstName} ${data?.author?.lastName}`} followBtn={true} />
+            </div>
+          ))} */}
+
+          {followData?.following?.map((data, index) => (
+            <div key={index}>
+              <FollowCard data={data} />
             </div>
           ))}
         </div>
