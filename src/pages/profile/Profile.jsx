@@ -7,6 +7,7 @@ import { useToast } from "../../services/hook";
 
 export default function Profile() {
   const { showToast } = useToast();
+  const [postCount, setPostCount] = useState(0);
 
   const profileData = {
     username: "username",
@@ -80,6 +81,7 @@ export default function Profile() {
     try {
       const response = await _get("social-media/posts/get/my?page=1&limit=100");
       if (response?.status === 200) {
+        setPostCount(response?.data?.data?.totalPosts);
         setMyPostData(response?.data?.data?.posts);
         // setMyPostData(response?.data?.data?.posts[0]?.author?.coverImage?.url);
       }
@@ -139,7 +141,7 @@ export default function Profile() {
                   <div className="d-flex mb-3">
                     <div className="me-4">
                       {" "}
-                      <strong>{profileData.posts}</strong> posts{" "}
+                      <strong>{postCount}</strong> posts{" "}
                     </div>
                     <div className="me-4">
                       <strong>{profileValues?.followersCount}</strong> followers
