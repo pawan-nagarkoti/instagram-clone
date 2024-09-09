@@ -71,7 +71,7 @@ export default function Search() {
               {notFoundUsername && searchTerm !== "" && <p>No user found.</p>}
               {isLoading && <Loading />}
               {!isLoading && hasSearchResults && (
-                <div className="col-4 mb-4 cusor-pointer " onClick={() => navigate("/follow-page")}>
+                <div className="col-4 mb-4 cusor-pointer " onClick={() => navigate("/follow-page", { state: searchTerm })}>
                   <div className="card">
                     <img src={searchResults?.account?.avatar?.url} className="username-card-img" />
                     <div className="card-body">

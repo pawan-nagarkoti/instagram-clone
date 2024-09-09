@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Loading, ProfileCard } from "../../components";
+import { Siderbar, MiddleOuterWraper, RightSidebar, CommonCard, Loading, ProfileCard, Button } from "../../components";
 import "./profile.scss";
-import { useNavigate } from "react-router-dom";
-import { _get } from "../../services/api";
+import { useLocation, useNavigate } from "react-router-dom";
+import { _get, _post } from "../../services/api";
 import { useToast } from "../../services/hook";
 import { useSocial } from "../../services/hook/SocialContext";
 
@@ -10,6 +10,7 @@ export default function Profile() {
   const { showToast } = useToast();
   const [postCount, setPostCount] = useState(0);
   const { setFollowData } = useSocial();
+  const { pathname, state } = useLocation();
 
   const [activeTab, setActiveTab] = useState("posts");
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Profile() {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [bookmarkedData, setBookmarkedData] = useState([]);
   const [myPostData, setMyPostData] = useState([]);
+  const [hasFollowed, setHasFollowed] = useState("");
 
   // This function is used for get profile data
   const getProfileData = async () => {
@@ -79,11 +81,40 @@ export default function Profile() {
     }
   };
 
+  // Get others profile page
+  const getOtherProfilePage = async () => {
+    setIsProfileLoading(true);
+    try {
+      const response = await _get(`social-media/profile/u/${state}`);
+      if (response?.status) {
+        setProfileValues(response?.data?.data);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsProfileLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getProfileData();
-    getBookmarkedData();
-    getMyPostData();
-  }, []);
+    // getProfileData();
+    // getBookmarkedData();
+    // getMyPostData();
+
+    if (pathname === "/follow-page") {
+      getOtherProfilePage();
+    } else {
+      getProfileData();
+      getBookmarkedData();
+      getMyPostData();
+    }
+  }, [pathname]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -117,6 +148,28 @@ export default function Profile() {
     } finally {
     }
   };
+
+  const handleFollowed = async () => {
+    try {
+      const response = await _post(`social-media/follow/${profileValues?.account?._id}`, {
+        toBeFollowedUserId: profileValues?._id,
+      });
+      if (response?.status === 200) {
+        setHasFollowed(response.data.data);
+        getOtherProfilePage();
+        showToast(response.data.message, "success");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
   return (
     <>
       <div className="row">
@@ -133,10 +186,20 @@ export default function Profile() {
                 <div className="col-md-9">
                   <div className="d-flex align-items-center mb-3">
                     <h2 className="me-3">{profileValues?.account?.username}</h2>
-                    <button className="btn btn-outline-secondary btn-sm me-2" onClick={() => navigate("/edit-profile")}>
-                      Edit Profile
-                    </button>
-                    <button className="btn btn-outline-secondary btn-sm">Settings</button>
+                    {pathname === "/follow-page" ? (
+                      <>
+                        <button className="btn btn-outline-secondary btn-sm me-2" onClick={handleFollowed}>
+                          {!profileValues?.isFollowing ? "Follow" : "Unfollow"}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="btn btn-outline-secondary btn-sm me-2" onClick={() => navigate("/edit-profile")}>
+                          Edit Profile
+                        </button>
+                        <button className="btn btn-outline-secondary btn-sm">Settings</button>
+                      </>
+                    )}
                   </div>
                   <div className="d-flex mb-3">
                     <div className="me-4">
