@@ -76,7 +76,7 @@ export default function RightSidebar() {
             </div>
           ))} */}
 
-          {followData?.following?.map((data, index) => (
+          {followData?.map((data, index) => (
             <div key={index}>
               <FollowCard data={data} />
             </div>

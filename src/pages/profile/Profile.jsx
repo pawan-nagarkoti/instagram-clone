@@ -135,7 +135,25 @@ export default function Profile() {
     try {
       const response = await _get(`social-media/follow/list/following/${profileValues.account.username}?page=1&limit=100`);
       if (response?.status === 200) {
-        setFollowData(response?.data?.data);
+        setFollowData(response?.data?.data?.following);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
+  const handleFollowersList = async () => {
+    try {
+      const response = await _get(`social-media/follow/list/followers/${profileValues.account.username}?page=1&limit=100`);
+      if (response?.status === 200) {
+        setFollowData(response?.data?.data?.followers);
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -206,10 +224,10 @@ export default function Profile() {
                       {" "}
                       <strong>{postCount}</strong> posts{" "}
                     </div>
-                    <div className="me-4">
+                    <div className="me-4 cusor-pointer" onClick={handleFollowersList}>
                       <strong>{profileValues?.followersCount}</strong> followers
                     </div>
-                    <div onClick={handleFollowingList}>
+                    <div className="cusor-pointer" onClick={handleFollowingList}>
                       <strong>{profileValues.followingCount}</strong> following
                     </div>
                   </div>
