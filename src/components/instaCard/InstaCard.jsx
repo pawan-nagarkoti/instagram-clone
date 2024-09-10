@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./InstaCard.scss";
-import { LikeFilledIcon, LikeUnFillIcon, commentIcon, BookmarkUnFilledIcon, BookmarkFilledIcon, DeleteIcon } from "../../assets/icons";
+import { LikeFilledIcon, LikeUnFillIcon, commentIcon, BookmarkUnFilledIcon, BookmarkFilledIcon, DeleteIcon, EditIcon } from "../../assets/icons";
 import { _delete, _get, _post } from "../../services/api";
 import Loading from "../Loading";
 import { useToast } from "../../services/hook";
@@ -115,8 +115,11 @@ export default function InstaCard() {
                   <img src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : `https://via.placeholder.com/150`} alt="User Avatar" className="avatar" />
                   <span className="username">{data?.author?.account?.username}</span>
                 </div>
-                <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
-                  {isPostDeleteLoading ? <Loading /> : DeleteIcon}
+                <div className="d-flex gap-3">
+                  <div className="cursor">{EditIcon}</div>
+                  <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
+                    {isPostDeleteLoading ? <Loading /> : DeleteIcon}
+                  </div>
                 </div>
               </div>
               <div className="post-image">
