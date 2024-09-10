@@ -102,6 +102,26 @@ export default function Profile() {
     }
   };
 
+  const getPostByUsername = async () => {
+    try {
+      const response = await _get(`social-media/posts/get/u/${state}?page=1&limit=3`);
+      if (response?.status === 200) {
+        setPostCount(response?.data?.data?.totalPosts);
+        setMyPostData(response?.data?.data?.posts);
+        // setMyPostData(response?.data?.data?.posts[0]?.author?.coverImage?.url);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+    }
+  };
+
   useEffect(() => {
     // getProfileData();
     // getBookmarkedData();
@@ -109,6 +129,7 @@ export default function Profile() {
 
     if (pathname === "/follow-page") {
       getOtherProfilePage();
+      getPostByUsername();
     } else {
       getProfileData();
       getBookmarkedData();
