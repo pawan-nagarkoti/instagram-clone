@@ -1,24 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { Siderbar, MiddleOuterWraper, RightSidebar, Loading } from "../../components";
 import { useForm } from "react-hook-form";
-import { _post } from "../../services/api";
+import { _get, _patch, _post } from "../../services/api";
 import { useToast } from "../../services/hook";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./create.scss";
 
 export default function Create() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [profilePicPreview, setProfilePicPreview] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { state, pathname } = useLocation();
+  const [getPostData, setGetPostData] = useState("");
 
-  const { register, handleSubmit, reset, watch } = useForm({});
+  const { register, handleSubmit, reset, watch, setValue } = useForm({
+    defaultValues: {
+      postInfo: "",
+      postImage: "",
+    },
+  });
 
-  const onSubmit = async (data) => {
-    setIsLoading(true);
-    const postDataObject = {
-      content: data?.postInfo,
-      images: data?.postImage[0],
-    };
+  const getPostById = async () => {
+    try {
+      const response = await _get(`social-media/posts/${state}`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response?.data?.success) {
+        setGetPostData(response?.data?.data);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (state) {
+      getPostById();
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (getPostData) {
+      setValue("postInfo", getPostData?.content);
+      setProfilePicPreview(getPostData?.images[0]?.url);
+    }
+  }, [getPostData]);
+
+  const createPost = async (postDataObject) => {
     try {
       const response = await _post("social-media/posts", postDataObject, {
         headers: {
@@ -40,6 +79,38 @@ export default function Create() {
     } finally {
       setIsLoading(false);
     }
+  };
+  const getUpdatedPost = async (postDataObject) => {
+    try {
+      const response = await _patch(`social-media/posts/${state}`, postDataObject, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response?.data?.success) {
+        showToast(response.data.message, "success");
+        navigate("/");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error Status Code:", error.response.status);
+        console.error("Error Message:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    const postDataObject = {
+      content: data?.postInfo,
+      images: data?.postImage[0],
+    };
+    pathname === "/update-post" ? getUpdatedPost(postDataObject) : createPost(postDataObject);
   };
 
   // Watch the profileImage field
@@ -71,7 +142,7 @@ export default function Create() {
                 </div>
                 {profilePicPreview && (
                   <div className="mb-3">
-                    <img src={profilePicPreview} alt="" className="w-50 h-50" />
+                    <img src={profilePicPreview} alt="" className="profile-preview-img" />
                   </div>
                 )}
                 <button type="submit" className="btn btn-primary">

@@ -19,6 +19,7 @@ const FacebookLayout = () => {
           <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
+            <Route path="/update-post" element={<Create />} />
             <Route path="/message" element={<Message />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/search" element={<Search />} />

@@ -9,15 +9,15 @@ import { SocialProvider } from "./services/hook/SocialContext.jsx";
 const { ToastContainerComponent } = useToast();
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ModalProvider>
-      <SocialProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <App />
-          <ToastContainerComponent />
-        </BrowserRouter>
-      </SocialProvider>
-    </ModalProvider>
-  </StrictMode>
+  // <StrictMode>
+  <ModalProvider>
+    <SocialProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <App />
+        <ToastContainerComponent />
+      </BrowserRouter>
+    </SocialProvider>
+  </ModalProvider>
+  // </StrictMode>
 );

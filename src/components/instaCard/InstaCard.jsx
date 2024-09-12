@@ -6,6 +6,7 @@ import Loading from "../Loading";
 import { useToast } from "../../services/hook";
 import { useModal } from "../../services/hook/ModalContext";
 import CommentModal from "../commentModal/CommentModal";
+import { useNavigate } from "react-router-dom";
 
 export default function InstaCard() {
   const [postData, setPostData] = useState([]);
@@ -14,6 +15,7 @@ export default function InstaCard() {
   const { showToast } = useToast();
   const { handleShow } = useModal();
   const [commentId, setCommentId] = useState("");
+  const navigate = useNavigate();
 
   const getPostData = async () => {
     setIsLoading(true);
@@ -116,7 +118,9 @@ export default function InstaCard() {
                   <span className="username">{data?.author?.account?.username}</span>
                 </div>
                 <div className="d-flex gap-3">
-                  <div className="cursor">{EditIcon}</div>
+                  <div className="cursor" onClick={() => navigate("/update-post", { state: data?._id })}>
+                    {EditIcon}
+                  </div>
                   <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
                     {isPostDeleteLoading ? <Loading /> : DeleteIcon}
                   </div>
