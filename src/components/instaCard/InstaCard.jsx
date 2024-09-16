@@ -7,6 +7,7 @@ import { useToast } from "../../services/hook";
 import { useModal } from "../../services/hook/ModalContext";
 import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
+import { useProfile } from "../../services/hook/ProfileContext";
 
 export default function InstaCard() {
   const [postData, setPostData] = useState([]);
@@ -16,6 +17,7 @@ export default function InstaCard() {
   const { handleShow } = useModal();
   const [commentId, setCommentId] = useState("");
   const navigate = useNavigate();
+  const { myProfileData } = useProfile();
 
   const getPostData = async () => {
     setIsLoading(true);
@@ -114,17 +116,23 @@ export default function InstaCard() {
             <div className="instagram-card mb-4">
               <div className="header">
                 <div>
-                  <img src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : `https://via.placeholder.com/150`} alt="User Avatar" className="avatar" />
+                  <img
+                    src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : `https://via.placeholder.com/150`}
+                    alt="User Avatar"
+                    className="avatar"
+                  />
                   <span className="username">{data?.author?.account?.username}</span>
                 </div>
-                <div className="d-flex gap-3">
-                  <div className="cursor" onClick={() => navigate("/update-post", { state: data?._id })}>
-                    {EditIcon}
+                {myProfileData?.owner === data?.author?.owner && (
+                  <div className="d-flex gap-3">
+                    <div className="cursor" onClick={() => navigate("/update-post", { state: data?._id })}>
+                      {EditIcon}
+                    </div>
+                    <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
+                      {isPostDeleteLoading ? <Loading /> : DeleteIcon}
+                    </div>
                   </div>
-                  <div className="cursor" onClick={() => handleDeletePost(data?._id)}>
-                    {isPostDeleteLoading ? <Loading /> : DeleteIcon}
-                  </div>
-                </div>
+                )}
               </div>
               <div className="post-image">
                 <img src={data?.images[0]?.url ? data?.images[0]?.url : "https://via.placeholder.com/150"} alt="Post Image" />

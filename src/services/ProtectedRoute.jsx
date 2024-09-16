@@ -21,7 +21,6 @@ const ProtectedRoute = ({ allowedRoles }) => {
 
   const getRoleFromCookies = Cookies.get("role");
   const roles = [getRoleFromCookies];
-  console.log(getRoleFromCookies, allowedRoles);
   // const hasAccess = allowedRoles.some((role) => roles?.includes(role));
 
   // // const hasAccess = allowedRoles.some((role) => user?.roles?.includes(role));

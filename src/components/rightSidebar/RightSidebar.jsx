@@ -7,6 +7,7 @@ import { useToast } from "../../services/hook";
 import { _get } from "../../services/api";
 import FollowCard from "../followCard/FollowCard";
 import { useSocial } from "../../services/hook/SocialContext";
+import { useProfile } from "../../services/hook/ProfileContext";
 
 export default function RightSidebar() {
   const { showToast } = useToast();
@@ -14,6 +15,7 @@ export default function RightSidebar() {
   const [profileData, setProfileData] = useState(null);
   const [postData, setPostData] = useState(null);
   const { followData } = useSocial();
+  const { setMyProfileData } = useProfile();
 
   // Get Logged In user
   const getLoggedInUserDetail = async () => {
@@ -21,6 +23,7 @@ export default function RightSidebar() {
     try {
       const response = await _get("social-media/profile");
       if (response?.status === 200) {
+        setMyProfileData(response?.data?.data);
         setProfileData(response?.data?.data);
       }
     } catch (error) {
@@ -63,7 +66,11 @@ export default function RightSidebar() {
   return (
     <>
       <LeftRightContainer position="right" colSize="3">
-        {isLoading ? <Loading /> : <ProfileCard image={profileData?.account?.avatar?.url} name={profileData?.account?.username} about={profileData?.location} />}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <ProfileCard image={profileData?.account?.avatar?.url} name={profileData?.account?.username} about={profileData?.location} />
+        )}
         <hr />
         <div className="suggestions mb-4">
           <div className="d-flex justify-content-between">
