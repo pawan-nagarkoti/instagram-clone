@@ -5,12 +5,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { _get, _post } from "../../services/api";
 import { useToast } from "../../services/hook";
 import { useSocial } from "../../services/hook/SocialContext";
+import { useProfile } from "../../services/hook/ProfileContext";
 
 export default function Profile() {
   const { showToast } = useToast();
   const [postCount, setPostCount] = useState(0);
   const { setFollowData } = useSocial();
   const { pathname, state } = useLocation();
+  const { setFollowersCheck } = useProfile();
 
   const [activeTab, setActiveTab] = useState("posts");
   const navigate = useNavigate();
@@ -142,7 +144,9 @@ export default function Profile() {
       case "posts":
         return <>{myPostData.length === 0 ? <p>Data is not found</p> : myPostData?.map((data, index) => <CommonCard key={index} data={data} />)}</>;
       case "saved":
-        return <>{bookmarkedData.length === 0 ? <p>Data is not found</p> : bookmarkedData?.map((data, index) => <CommonCard key={index} data={data} />)}</>;
+        return (
+          <>{bookmarkedData.length === 0 ? <p>Data is not found</p> : bookmarkedData?.map((data, index) => <CommonCard key={index} data={data} />)}</>
+        );
       case "reels":
         return <div>Reels Content</div>;
       case "tags":
@@ -153,6 +157,7 @@ export default function Profile() {
   };
 
   const handleFollowingList = async () => {
+    setFollowersCheck((pre) => !pre);
     try {
       const response = await _get(`social-media/follow/list/following/${profileValues.account.username}?page=1&limit=100`);
       if (response?.status === 200) {
@@ -171,6 +176,7 @@ export default function Profile() {
   };
 
   const handleFollowersList = async () => {
+    setFollowersCheck((pre) => !pre);
     try {
       const response = await _get(`social-media/follow/list/followers/${profileValues.account.username}?page=1&limit=100`);
       if (response?.status === 200) {

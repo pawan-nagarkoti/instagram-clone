@@ -15,7 +15,7 @@ export default function RightSidebar() {
   const [profileData, setProfileData] = useState(null);
   const [postData, setPostData] = useState(null);
   const { followData } = useSocial();
-  const { setMyProfileData } = useProfile();
+  const { setMyProfileData, followersCheck } = useProfile();
 
   // Get Logged In user
   const getLoggedInUserDetail = async () => {
@@ -74,8 +74,8 @@ export default function RightSidebar() {
         <hr />
         <div className="suggestions mb-4">
           <div className="d-flex justify-content-between">
-            <p className="text-muted fw-bold">Suggestions For You</p>
-            <button className="btn btn-link p-0 text-dark">See All</button>
+            <h2 className="text-muted fw-bold mb-4">{followersCheck ? "Followers" : "Following"}</h2>
+            {/* <button className="btn btn-link p-0 text-dark">See All</button> */}
           </div>
           {/* {postData?.map((data, index) => (
             <div key={index}>
