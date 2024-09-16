@@ -9,7 +9,7 @@ export const useProfile = () => useContext(ProfileContext);
 // SocialProvider component that wraps around the children
 export const ProfileProvider = ({ children }) => {
   const [myProfileData, setMyProfileData] = useState("");
-  const [followersCheck, setFollowersCheck] = useState(false);
+  const [followersCheck, setFollowersCheck] = useState("");
 
   const contextValue = {
     myProfileData,

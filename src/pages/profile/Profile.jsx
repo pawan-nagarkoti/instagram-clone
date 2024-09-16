@@ -157,7 +157,7 @@ export default function Profile() {
   };
 
   const handleFollowingList = async () => {
-    setFollowersCheck((pre) => !pre);
+    setFollowersCheck("followingText");
     try {
       const response = await _get(`social-media/follow/list/following/${profileValues.account.username}?page=1&limit=100`);
       if (response?.status === 200) {
@@ -176,7 +176,7 @@ export default function Profile() {
   };
 
   const handleFollowersList = async () => {
-    setFollowersCheck((pre) => !pre);
+    setFollowersCheck("followersText");
     try {
       const response = await _get(`social-media/follow/list/followers/${profileValues.account.username}?page=1&limit=100`);
       if (response?.status === 200) {

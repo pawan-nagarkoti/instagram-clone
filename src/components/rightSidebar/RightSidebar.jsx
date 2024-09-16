@@ -8,6 +8,7 @@ import { _get } from "../../services/api";
 import FollowCard from "../followCard/FollowCard";
 import { useSocial } from "../../services/hook/SocialContext";
 import { useProfile } from "../../services/hook/ProfileContext";
+import { useLocation } from "react-router-dom";
 
 export default function RightSidebar() {
   const { showToast } = useToast();
@@ -16,6 +17,7 @@ export default function RightSidebar() {
   const [postData, setPostData] = useState(null);
   const { followData } = useSocial();
   const { setMyProfileData, followersCheck } = useProfile();
+  const { pathname } = useLocation();
 
   // Get Logged In user
   const getLoggedInUserDetail = async () => {
@@ -72,23 +74,28 @@ export default function RightSidebar() {
           <ProfileCard image={profileData?.account?.avatar?.url} name={profileData?.account?.username} about={profileData?.location} />
         )}
         <hr />
-        <div className="suggestions mb-4">
-          <div className="d-flex justify-content-between">
-            <h2 className="text-muted fw-bold mb-4">{followersCheck ? "Followers" : "Following"}</h2>
-            {/* <button className="btn btn-link p-0 text-dark">See All</button> */}
-          </div>
-          {/* {postData?.map((data, index) => (
+        {pathname === "/profile" && (
+          <div className="suggestions mb-4">
+            <div className="d-flex justify-content-between">
+              {/* <h2 className="text-muted fw-bold mb-4">{followersCheck === "followingText" ? "Followers" : "Following"}</h2> */}
+              {followersCheck === "followersText" && <h2 className="text-muted fw-bold mb-4">Followers</h2>}
+              {followersCheck === "followingText" && <h2 className="text-muted fw-bold mb-4">Following</h2>}
+
+              {/* <button className="btn btn-link p-0 text-dark">See All</button> */}
+            </div>
+            {/* {postData?.map((data, index) => (
             <div key={index}>
               <ProfileCard image={data?.author?.account?.avatar?.url} name={data?.author?.account?.username} about={`${data?.author?.firstName} ${data?.author?.lastName}`} followBtn={true} />
             </div>
           ))} */}
 
-          {followData?.map((data, index) => (
-            <div key={index}>
-              <FollowCard data={data} />
-            </div>
-          ))}
-        </div>
+            {followData?.map((data, index) => (
+              <div key={index}>
+                <FollowCard data={data} />
+              </div>
+            ))}
+          </div>
+        )}
       </LeftRightContainer>
     </>
   );
