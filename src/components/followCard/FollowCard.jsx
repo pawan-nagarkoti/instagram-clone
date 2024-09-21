@@ -10,6 +10,7 @@ export default function FollowCard({ data }) {
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [toggleFollowUnflowBtn, setToggleUnFollowBtn] = useState(data?.isFollowing);
+  const { setHasClickedFollowUnfollowBtn } = useProfile();
 
   const image = data?.avatar?.url || "";
   const name = data?.username || "";
@@ -25,6 +26,7 @@ export default function FollowCard({ data }) {
         toBeFollowedUserId: data?._id,
       });
       if (response?.status === 200) {
+        setHasClickedFollowUnfollowBtn((pre) => !pre);
         showToast(response.data.message, "success");
       }
     } catch (error) {
@@ -56,7 +58,7 @@ export default function FollowCard({ data }) {
             <Loading />
           ) : (
             <button className="btn btn-link p-0 ms-auto text-primary" onClick={handleFollowed}>
-              <strong className="follow-btn">{toggleFollowUnflowBtn ? "Follow" : "UnFollow"}</strong>
+              <strong className="follow-btn">{!toggleFollowUnflowBtn ? "Follow" : "UnFollow"}</strong>
             </button>
           )}
         </div>

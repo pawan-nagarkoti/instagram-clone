@@ -10,12 +10,15 @@ export const useProfile = () => useContext(ProfileContext);
 export const ProfileProvider = ({ children }) => {
   const [myProfileData, setMyProfileData] = useState("");
   const [followersCheck, setFollowersCheck] = useState("");
+  const [hasClickeckFollowUnfollowBtn, setHasClickedFollowUnfollowBtn] = useState(false);
 
   const contextValue = {
     myProfileData,
     setMyProfileData,
     followersCheck,
     setFollowersCheck,
+    hasClickeckFollowUnfollowBtn,
+    setHasClickedFollowUnfollowBtn,
   };
 
   return <ProfileContext.Provider value={contextValue}>{children}</ProfileContext.Provider>;

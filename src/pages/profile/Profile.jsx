@@ -12,7 +12,8 @@ export default function Profile() {
   const [postCount, setPostCount] = useState(0);
   const { setFollowData } = useSocial();
   const { pathname, state } = useLocation();
-  const { setFollowersCheck, rightSideBarRefresh, setRightSideBarRefresh } = useProfile();
+  const { setFollowersCheck, rightSideBarRefresh, setRightSideBarRefresh, hasClickeckFollowUnfollowBtn, setHasClickedFollowUnfollowBtn } =
+    useProfile();
 
   const [activeTab, setActiveTab] = useState("posts");
   const navigate = useNavigate();
@@ -193,6 +194,10 @@ export default function Profile() {
     } finally {
     }
   };
+
+  useEffect(() => {
+    getProfileData();
+  }, [hasClickeckFollowUnfollowBtn]);
 
   const handleFollowed = async () => {
     try {
