@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./followCard.scss";
 import { useSocial } from "../../services/hook/SocialContext";
 import { _get, _post } from "../../services/api";
 import { useToast } from "../../services/hook";
+import { useProfile } from "../../services/hook/ProfileContext";
+import Loading from "../Loading";
 
 export default function FollowCard({ data }) {
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [toggleFollowUnflowBtn, setToggleUnFollowBtn] = useState(data?.isFollowing);
+
   const image = data?.avatar?.url || "";
   const name = data?.username || "";
   const firstName = data?.profile?.firstName || "";
@@ -13,6 +18,8 @@ export default function FollowCard({ data }) {
   const isFollow = data?.isFollowing;
 
   const handleFollowed = async () => {
+    setToggleUnFollowBtn((pre) => !pre);
+    setIsLoading(true);
     try {
       const response = await _post(`social-media/follow/${data?._id}`, {
         toBeFollowedUserId: data?._id,
@@ -29,6 +36,7 @@ export default function FollowCard({ data }) {
         console.error("An unknown error occurred.");
       }
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,9 +52,13 @@ export default function FollowCard({ data }) {
               {lastName}
             </p>
           </div>
-          <button className="btn btn-link p-0 ms-auto text-primary" onClick={handleFollowed}>
-            <strong className="follow-btn">{isFollow ? "Follow" : "UnFollow"}</strong>
-          </button>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <button className="btn btn-link p-0 ms-auto text-primary" onClick={handleFollowed}>
+              <strong className="follow-btn">{toggleFollowUnflowBtn ? "Follow" : "UnFollow"}</strong>
+            </button>
+          )}
         </div>
       </div>
     </>
