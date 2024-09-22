@@ -19,6 +19,22 @@ export default function InstaCard() {
   const navigate = useNavigate();
   const { myProfileData } = useProfile();
 
+  const getSinglePostData = async (postId) => {
+    try {
+      const response = await _get(`social-media/posts/${postId}`);
+      if (response?.status === 200) {
+        return response?.data?.data; // Assuming the API returns the updated post data
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        console.error("Error fetching post:", error.response.data.message);
+        showToast(error.response.data.message, "error");
+      } else {
+        console.error("An unknown error occurred while fetching the post.");
+      }
+    }
+  };
+
   const getPostData = async () => {
     setIsLoading(true);
     try {
@@ -69,8 +85,13 @@ export default function InstaCard() {
     try {
       const response = await _post(`social-media/bookmarks/${postId}`);
       if (response?.status === 200) {
+        // Update the specific post's like status
+        const updatedPost = await getSinglePostData(postId);
+        // Update only the specific post in state
+        setPostData((prevPostData) => prevPostData.map((post) => (post._id === postId ? updatedPost : post)));
+        // getPostData();
         showToast(response.data.message, "success");
-        getPostData();
+        // getPostData();
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -90,7 +111,11 @@ export default function InstaCard() {
       const response = await _post(`social-media/like/post/${postId}`);
       if (response?.status === 200) {
         showToast(response.data.message, "success");
-        getPostData();
+        // Update the specific post's like status
+        const updatedPost = await getSinglePostData(postId);
+        // Update only the specific post in state
+        setPostData((prevPostData) => prevPostData.map((post) => (post._id === postId ? updatedPost : post)));
+        // getPostData();
       }
     } catch (error) {
       if (error.response && error.response.data) {
