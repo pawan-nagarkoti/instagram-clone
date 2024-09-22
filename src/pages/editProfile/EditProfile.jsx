@@ -7,13 +7,14 @@ import { _get, _patch } from "../../services/api";
 import { useToast } from "../../services/hook";
 import { useNavigate } from "react-router-dom";
 import { formatDateToYYYYMMDD, convertImageUrlToBinary } from "../../util/helper";
+import notFoundImage from "../../assets/images/notFound2.png";
 
 export default function EditProfile() {
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [getusername, setGetUsername] = useState("");
-  const [profilePicPreview, setProfilePicPreview] = useState("https://via.placeholder.com/150");
+  const [profilePicPreview, setProfilePicPreview] = useState(notFoundImage);
 
   const { register, handleSubmit, reset, watch } = useForm({
     defaultValues: {
@@ -130,7 +131,14 @@ export default function EditProfile() {
                   <img src={profilePicPreview} alt="Profile" className="rounded-circle profile-pic me-3" />
                   <div>
                     <h6 className="m-0">{getusername}</h6>
-                    <input type="file" accept="image/*" className="form-control-file" style={{ display: "none" }} id="profilePicInput" {...register("profileImage")} />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-control-file"
+                      style={{ display: "none" }}
+                      id="profilePicInput"
+                      {...register("profileImage")}
+                    />
                     <label htmlFor="profilePicInput" className="btn btn-link p-0 text-primary" style={{ cursor: "pointer" }}>
                       Change Profile Photo
                     </label>{" "}

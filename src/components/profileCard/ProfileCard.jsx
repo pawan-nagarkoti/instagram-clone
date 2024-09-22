@@ -1,12 +1,13 @@
 import React from "react";
 import "./profileCard.scss";
+import notFoundImage from "../../assets/images/notFound2.png";
 
-export default function ProfileCard({ image = "https://via.placeholder.com/150", name = "", about = "", followBtn = false }) {
+export default function ProfileCard({ image = notFoundImage, name = "", about = "", followBtn = false }) {
   return (
     <>
       <div className="profile-info mb-4">
         <div className="d-flex align-items-center">
-          <img src={image ? image : "https://via.placeholder.com/150"} alt="Profile" className="rounded-circle me-3 side-bar-profile" />
+          <img src={image ? image : notFoundImage} alt="Profile" className="rounded-circle me-3 side-bar-profile" />
           <div>
             <h6 className="m-0">{name}</h6>
             <p className="text-muted m-0">{about}</p>

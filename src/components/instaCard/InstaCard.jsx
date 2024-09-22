@@ -8,6 +8,7 @@ import { useModal } from "../../services/hook/ModalContext";
 import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
 import { useProfile } from "../../services/hook/ProfileContext";
+import notFoundImage from "../../assets/images/notFound2.png";
 
 export default function InstaCard() {
   const [postData, setPostData] = useState([]);
@@ -142,7 +143,7 @@ export default function InstaCard() {
               <div className="header">
                 <div>
                   <img
-                    src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : `https://via.placeholder.com/150`}
+                    src={data?.author?.account?.avatar?.url ? data?.author?.account?.avatar?.url : notFoundImage}
                     alt="User Avatar"
                     className="avatar"
                   />
@@ -160,7 +161,7 @@ export default function InstaCard() {
                 )}
               </div>
               <div className="post-image">
-                <img src={data?.images[0]?.url ? data?.images[0]?.url : "https://via.placeholder.com/150"} alt="Post Image" />
+                <img src={data?.images[0]?.url ? data?.images[0]?.url : notFoundImage} alt="Post Image" />
               </div>
               <div className="description">
                 <div className="d-flex justify-content-between">

@@ -5,6 +5,7 @@ import { _get, _post } from "../../services/api";
 import { useToast } from "../../services/hook";
 import { useProfile } from "../../services/hook/ProfileContext";
 import Loading from "../Loading";
+import notFoundImage from "../../assets/images/notFound2.png";
 
 export default function FollowCard({ data }) {
   const { showToast } = useToast();
@@ -46,7 +47,7 @@ export default function FollowCard({ data }) {
     <>
       <div className="follow-info-container mb-4">
         <div className="d-flex align-items-center">
-          <img src={image ? image : "https://via.placeholder.com/150"} alt="Profile" className="rounded-circle me-3 follow-profile" />
+          <img src={image ? image : notFoundImage} alt="Profile" className="rounded-circle me-3 follow-profile" />
           <div>
             <h6 className="m-0">{name}</h6>
             <p className="text-muted m-0">
