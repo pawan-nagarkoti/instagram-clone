@@ -71,7 +71,12 @@ export default function RightSidebar() {
         {isLoading ? (
           <Loading />
         ) : (
-          <ProfileCard image={profileData?.account?.avatar?.url} name={profileData?.account?.username} about={profileData?.location} />
+          <ProfileCard
+            image={profileData?.account?.avatar?.url}
+            name={profileData?.account?.username}
+            about={profileData?.location}
+            bio={profileData?.bio}
+          />
         )}
         <hr />
         {pathname === "/profile" && (

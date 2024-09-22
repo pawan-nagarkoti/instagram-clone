@@ -2,7 +2,8 @@ import React from "react";
 import "./profileCard.scss";
 import notFoundImage from "../../assets/images/notFound2.png";
 
-export default function ProfileCard({ image = notFoundImage, name = "", about = "", followBtn = false }) {
+export default function ProfileCard({ image = notFoundImage, name = "", about = "", bio = "", followBtn = false }) {
+  console.log(bio);
   return (
     <>
       <div className="profile-info mb-4">
@@ -18,6 +19,7 @@ export default function ProfileCard({ image = notFoundImage, name = "", about = 
             </button>
           )}
         </div>
+        {!followBtn && <p className="bio-font-size">{bio}</p>}
       </div>
     </>
   );
